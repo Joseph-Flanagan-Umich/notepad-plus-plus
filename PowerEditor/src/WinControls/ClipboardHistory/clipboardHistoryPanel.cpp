@@ -256,9 +256,13 @@ INT_PTR CALLBACK ClipboardHistoryPanel::run_dlgProc(UINT message, WPARAM wParam,
 								c = new char[nbChar + 1];
 								WideCharToMultiByte(codepage, 0, (wchar_t *)ba.getPointer(), static_cast<int32_t>(ba.getLength()), c, nbChar + 1, NULL, NULL);
 
+								generic_string eolString = (*_ppEditView)->getEOLString();
+
 								(*_ppEditView)->execute(SCI_REPLACESEL, 0, reinterpret_cast<LPARAM>(""));
 								(*_ppEditView)->execute(SCI_ADDTEXT, strlen(c), reinterpret_cast<LPARAM>(c));
 								(*_ppEditView)->getFocus();
+								int eolMode = int((*_ppEditView)->execute(SCI_GETEOLMODE));
+								(*_ppEditView)->execute(SCI_CONVERTEOLS, eolMode);
 								delete[] c;
 							}
 							catch (...)
